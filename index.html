@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,10 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         body {
@@ -16,6 +20,8 @@
             overflow: hidden;
             background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 50%, #e1bee7 100%);
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .music-control {
@@ -31,6 +37,7 @@
             padding: 8px 16px;
             border-radius: 25px;
             box-shadow: 0 4px 15px rgba(199, 21, 83, 0.2);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             opacity: 0;
             transition: opacity 0.5s ease;
@@ -594,6 +601,7 @@
             padding: 30px 40px;
             background: rgba(255, 255, 255, 0.35);
             border-radius: 20px;
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             color: #880e4f;
         }
@@ -1632,6 +1640,7 @@
             padding: 20px 40px;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(199, 21, 83, 0.2);
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             z-index: 1000;
             text-align: center;
@@ -2351,15 +2360,30 @@ quiet and sweet
 
         function initAudio() {
             if (audioContext) return;
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            
-            bgmGainNode = audioContext.createGain();
-            bgmGainNode.connect(audioContext.destination);
-            bgmGainNode.gain.value = 0.3;
-            
-            sfxGainNode = audioContext.createGain();
-            sfxGainNode.connect(audioContext.destination);
-            sfxGainNode.gain.value = 0.5;
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                bgmGainNode = audioContext.createGain();
+                bgmGainNode.connect(audioContext.destination);
+                bgmGainNode.gain.value = 0.3;
+                
+                sfxGainNode = audioContext.createGain();
+                sfxGainNode.connect(audioContext.destination);
+                sfxGainNode.gain.value = 0.5;
+            } catch (e) {
+                console.error('Audio initialization failed:', e);
+            }
+        }
+
+        function ensureAudioContext() {
+            if (!audioContext) {
+                initAudio();
+            }
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().catch(e => {
+                    console.error('Failed to resume AudioContext:', e);
+                });
+            }
         }
 
         function playNote(frequency, duration, gainNode, type = 'sine', delay = 0) {
@@ -2385,7 +2409,8 @@ quiet and sweet
         }
 
         function playBGM() {
-            if (!audioContext) initAudio();
+            ensureAudioContext();
+            if (!audioContext) return;
             if (isPlaying) return;
             
             isPlaying = true;
@@ -2450,10 +2475,8 @@ quiet and sweet
         }
 
         function toggleBGM() {
-            if (!audioContext) initAudio();
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
+            ensureAudioContext();
+            if (!audioContext) return;
             
             if (isPlaying) {
                 stopBGM();
@@ -2561,6 +2584,17 @@ quiet and sweet
             if (sfxGainNode) {
                 sfxGainNode.gain.value = volume;
             }
+        }
+
+        function addTouchClickSupport(element, handler) {
+            if (!element) return;
+            
+            element.addEventListener('click', handler);
+            
+            element.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                handler(e);
+            }, { passive: false });
         }
 
         document.getElementById('musicToggle').addEventListener('click', function(e) {
@@ -3543,7 +3577,7 @@ quiet and sweet
 
         function openEnvelope() {
             console.log('openEnvelope called');
-            initAudio();
+            ensureAudioContext();
             playEnvelopeSound();
             
             const flap = document.getElementById('envelopeFlap');
@@ -3563,7 +3597,8 @@ quiet and sweet
             }, 1000);
         }
 
-        document.getElementById('scene1').addEventListener('click', function(e) {
+        addTouchClickSupport(document.getElementById('scene1'), function(e) {
+            ensureAudioContext();
             playClickSound();
             playHeartSound();
             playTransitionSound();
@@ -3579,7 +3614,8 @@ quiet and sweet
             setTimeout(() => switchScene(2), 300);
         });
 
-        document.getElementById('scene2').addEventListener('click', function(e) {
+        addTouchClickSupport(document.getElementById('scene2'), function(e) {
+            ensureAudioContext();
             playClickSound();
             playHeartSound();
             playTransitionSound();
@@ -3596,7 +3632,8 @@ quiet and sweet
             setTimeout(() => switchScene(3), 300);
         });
 
-        document.getElementById('scene3').addEventListener('click', function(e) {
+        addTouchClickSupport(document.getElementById('scene3'), function(e) {
+            ensureAudioContext();
             playClickSound();
             playHeartSound();
             playTransitionSound();
@@ -3612,14 +3649,14 @@ quiet and sweet
             setTimeout(() => switchScene(4), 300);
         });
 
-        document.getElementById('scene4').addEventListener('click', function(e) {
+        addTouchClickSupport(document.getElementById('scene4'), function(e) {
+            ensureAudioContext();
             playClickSound();
             playHeartSound();
             playTransitionSound();
             createHeartClick(e.clientX, e.clientY);
             createPulseRing(e.clientX, e.clientY);
             createSparkleTrail(e.clientX, e.clientY);
-            createFloatingBubble();
             createTouchRipple(e.clientX, e.clientY);
             createParticles(e.clientX, e.clientY, 8);
             createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
@@ -3629,7 +3666,8 @@ quiet and sweet
             setTimeout(() => switchScene(5), 300);
         });
 
-        document.getElementById('scene5').addEventListener('click', function(e) {
+        addTouchClickSupport(document.getElementById('scene5'), function(e) {
+            ensureAudioContext();
             playClickSound();
             playHeartSound();
             playTransitionSound();
@@ -3645,7 +3683,8 @@ quiet and sweet
             setTimeout(() => switchScene('future'), 300);
         });
 
-        document.getElementById('sceneFuture').addEventListener('click', function(e) {
+        addTouchClickSupport(document.getElementById('sceneFuture'), function(e) {
+            ensureAudioContext();
             playClickSound();
             playConfessionSound();
             createHeartClick(e.clientX, e.clientY);
@@ -3664,8 +3703,9 @@ quiet and sweet
         const btnYes = document.getElementById('btnYes');
         const btnNo = document.getElementById('btnNo');
 
-        btnNo.addEventListener('click', function(e) {
+        addTouchClickSupport(btnNo, function(e) {
             e.stopPropagation();
+            ensureAudioContext();
             playClickSound();
             noClickCount++;
             
@@ -3688,8 +3728,9 @@ quiet and sweet
             btnNo.style.fontSize = (1.15 * noScale) + 'rem';
         });
 
-        btnYes.addEventListener('click', function(e) {
+        addTouchClickSupport(btnYes, function(e) {
             e.stopPropagation();
+            ensureAudioContext();
             playSuccessSound();
             switchScene('promise');
             
@@ -3701,7 +3742,8 @@ quiet and sweet
             }
         });
 
-        document.getElementById('scenePromise').addEventListener('click', function(e) {
+        addTouchClickSupport(document.getElementById('scenePromise'), function(e) {
+            ensureAudioContext();
             playClickSound();
             playHeartSound();
             playTransitionSound();
@@ -3715,8 +3757,9 @@ quiet and sweet
             setTimeout(() => switchScene(8), 300);
         });
 
-        document.getElementById('scene8').addEventListener('click', function(e) {
+        addTouchClickSupport(document.getElementById('scene8'), function(e) {
             e.stopPropagation();
+            ensureAudioContext();
             playClickSound();
             playDialogueSound();
             currentDialogue++;
@@ -3746,8 +3789,9 @@ quiet and sweet
             }
         });
 
-        document.getElementById('btnReplay').addEventListener('click', function(e) {
+        addTouchClickSupport(document.getElementById('btnReplay'), function(e) {
             e.stopPropagation();
+            ensureAudioContext();
             playClickSound();
             resetAll();
             document.querySelectorAll('.scene').forEach(scene => {
@@ -3764,24 +3808,30 @@ quiet and sweet
         
         document.getElementById('musicControl').classList.add('visible');
         
-        document.getElementById('envelope').addEventListener('click', function(e) {
+        addTouchClickSupport(document.getElementById('envelope'), function(e) {
             e.preventDefault();
             e.stopPropagation();
             openEnvelope();
         });
         
-        document.getElementById('wishBottle').addEventListener('click', function(e) {
+        addTouchClickSupport(document.getElementById('wishBottle'), function(e) {
             e.stopPropagation();
             showWishModal();
         });
         
         startDanmaku();
         
-        setTimeout(() => {
-            initAudio();
+        function startAudioAfterInteraction() {
+            ensureAudioContext();
             playBGM();
             startAmbientEffects();
-        }, 1000);
+            
+            document.removeEventListener('touchstart', startAudioAfterInteraction);
+            document.removeEventListener('click', startAudioAfterInteraction);
+        }
+        
+        document.addEventListener('touchstart', startAudioAfterInteraction, { once: true });
+        document.addEventListener('click', startAudioAfterInteraction, { once: true });
     </script>
 </body>
 </html>
