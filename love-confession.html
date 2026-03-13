@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -3821,6 +3821,24 @@ quiet and sweet
         
         startDanmaku();
         
+        function tryAutoPlay() {
+            try {
+                initAudio();
+                if (audioContext) {
+                    audioContext.resume().then(() => {
+                        playBGM();
+                        startAmbientEffects();
+                    }).catch(err => {
+                        console.log('Auto-play blocked, waiting for interaction:', err);
+                    });
+                    return true;
+                }
+            } catch (e) {
+                console.log('Auto-play failed:', e);
+            }
+            return false;
+        }
+        
         function startAudioAfterInteraction() {
             ensureAudioContext();
             playBGM();
@@ -3830,8 +3848,14 @@ quiet and sweet
             document.removeEventListener('click', startAudioAfterInteraction);
         }
         
-        document.addEventListener('touchstart', startAudioAfterInteraction, { once: true });
-        document.addEventListener('click', startAudioAfterInteraction, { once: true });
+        tryAutoPlay();
+        
+        setTimeout(() => {
+            if (!isPlaying) {
+                document.addEventListener('touchstart', startAudioAfterInteraction, { once: true });
+                document.addEventListener('click', startAudioAfterInteraction, { once: true });
+            }
+        }, 1000);
     </script>
 </body>
 </html>
