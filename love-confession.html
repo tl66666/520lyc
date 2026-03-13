@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -2597,15 +2597,6 @@ quiet and sweet
             }, { passive: false });
         }
 
-        document.getElementById('musicToggle').addEventListener('click', function(e) {
-            e.stopPropagation();
-            toggleBGM();
-        });
-
-        document.getElementById('volumeSlider').addEventListener('input', function(e) {
-            setVolume(e.target.value);
-        });
-
         const noButtonTexts = ['让我想想', '再考虑一下嘛', '我真的很喜欢你', '别拒绝我呀', '就答应我吧', '我会一直对你好的', '求求你了 💕', '你是我最重要的人'];
         
         const dialogues = [
@@ -3597,265 +3588,279 @@ quiet and sweet
             }, 1000);
         }
 
-        addTouchClickSupport(document.getElementById('scene1'), function(e) {
-            ensureAudioContext();
-            playClickSound();
-            playHeartSound();
-            playTransitionSound();
-            createHeartClick(e.clientX, e.clientY);
-            createPulseRing(e.clientX, e.clientY);
-            createSparkleTrail(e.clientX, e.clientY);
-            createTouchRipple(e.clientX, e.clientY);
-            createParticles(e.clientX, e.clientY, 8);
-            createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
-            playLoveNoteSound();
-            createHeartbeatEffect();
-            addHeartValue(14);
-            setTimeout(() => switchScene(2), 300);
-        });
-
-        addTouchClickSupport(document.getElementById('scene2'), function(e) {
-            ensureAudioContext();
-            playClickSound();
-            playHeartSound();
-            playTransitionSound();
-            createHeartClick(e.clientX, e.clientY);
-            createPulseRing(e.clientX, e.clientY);
-            createFloatingBubble();
-            createSparkleTrail(e.clientX, e.clientY);
-            createTouchRipple(e.clientX, e.clientY);
-            createParticles(e.clientX, e.clientY, 8);
-            createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
-            playLoveNoteSound();
-            createHeartbeatEffect();
-            addHeartValue(14);
-            setTimeout(() => switchScene(3), 300);
-        });
-
-        addTouchClickSupport(document.getElementById('scene3'), function(e) {
-            ensureAudioContext();
-            playClickSound();
-            playHeartSound();
-            playTransitionSound();
-            createHeartClick(e.clientX, e.clientY);
-            createPulseRing(e.clientX, e.clientY);
-            createSparkleTrail(e.clientX, e.clientY);
-            createTouchRipple(e.clientX, e.clientY);
-            createParticles(e.clientX, e.clientY, 8);
-            createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
-            playLoveNoteSound();
-            createHeartbeatEffect();
-            addHeartValue(14);
-            setTimeout(() => switchScene(4), 300);
-        });
-
-        addTouchClickSupport(document.getElementById('scene4'), function(e) {
-            ensureAudioContext();
-            playClickSound();
-            playHeartSound();
-            playTransitionSound();
-            createHeartClick(e.clientX, e.clientY);
-            createPulseRing(e.clientX, e.clientY);
-            createSparkleTrail(e.clientX, e.clientY);
-            createTouchRipple(e.clientX, e.clientY);
-            createParticles(e.clientX, e.clientY, 8);
-            createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
-            playLoveNoteSound();
-            createHeartbeatEffect();
-            addHeartValue(14);
-            setTimeout(() => switchScene(5), 300);
-        });
-
-        addTouchClickSupport(document.getElementById('scene5'), function(e) {
-            ensureAudioContext();
-            playClickSound();
-            playHeartSound();
-            playTransitionSound();
-            createHeartClick(e.clientX, e.clientY);
-            createPulseRing(e.clientX, e.clientY);
-            createSparkleTrail(e.clientX, e.clientY);
-            createTouchRipple(e.clientX, e.clientY);
-            createParticles(e.clientX, e.clientY, 8);
-            createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
-            playLoveNoteSound();
-            createHeartbeatEffect();
-            addHeartValue(14);
-            setTimeout(() => switchScene('future'), 300);
-        });
-
-        addTouchClickSupport(document.getElementById('sceneFuture'), function(e) {
-            ensureAudioContext();
-            playClickSound();
-            playConfessionSound();
-            createHeartClick(e.clientX, e.clientY);
-            createPulseRing(e.clientX, e.clientY);
-            createHeartExplosion(e.clientX, e.clientY);
-            createSparkleTrail(e.clientX, e.clientY);
-            createTouchRipple(e.clientX, e.clientY);
-            createParticles(e.clientX, e.clientY, 12);
-            createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
-            playLoveNoteSound();
-            createHeartbeatEffect();
-            addHeartValue(16);
-            setTimeout(() => switchScene(6), 300);
-        });
-
-        const btnYes = document.getElementById('btnYes');
-        const btnNo = document.getElementById('btnNo');
-
-        addTouchClickSupport(btnNo, function(e) {
-            e.stopPropagation();
-            ensureAudioContext();
-            playClickSound();
-            noClickCount++;
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            createNightSakura();
+            initHiddenHearts();
             
-            createRejectFloatingText();
-            
-            yesScale += 0.12;
-            btnYes.style.transform = `scale(${yesScale})`;
-            btnYes.style.boxShadow = `0 ${4 * yesScale}px ${20 * yesScale}px rgba(255, 105, 180, ${0.5 + noClickCount * 0.05})`;
-            
-            const gradientPercent = Math.min(100, 50 + noClickCount * 8);
-            btnYes.style.background = `linear-gradient(135deg, #ff69b4 0%, #ff1493 ${gradientPercent}%, #c71585 100%)`;
-            
-            noScale = Math.max(0.35, noScale - 0.08);
-            noOpacity = Math.max(0.25, noOpacity - 0.12);
-            btnNo.style.transform = `scale(${noScale})`;
-            btnNo.style.opacity = noOpacity;
-            
-            const textIndex = Math.min(noClickCount, noButtonTexts.length - 1);
-            btnNo.textContent = noButtonTexts[textIndex];
-            btnNo.style.fontSize = (1.15 * noScale) + 'rem';
-        });
-
-        addTouchClickSupport(btnYes, function(e) {
-            e.stopPropagation();
-            ensureAudioContext();
-            playSuccessSound();
-            switchScene('promise');
-            
-            for (let i = 0; i < 20; i++) {
-                setTimeout(() => createHeart(), i * 100);
+            const musicControl = document.getElementById('musicControl');
+            if (musicControl) {
+                musicControl.classList.add('visible');
             }
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => createSparkle(), i * 50);
-            }
-        });
-
-        addTouchClickSupport(document.getElementById('scenePromise'), function(e) {
-            ensureAudioContext();
-            playClickSound();
-            playHeartSound();
-            playTransitionSound();
-            createHeartClick(e.clientX, e.clientY);
-            createPulseRing(e.clientX, e.clientY);
-            createSparkleTrail(e.clientX, e.clientY);
-            createParticles(e.clientX, e.clientY, 8);
-            createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
-            playLoveNoteSound();
-            createHeartbeatEffect();
-            setTimeout(() => switchScene(8), 300);
-        });
-
-        addTouchClickSupport(document.getElementById('scene8'), function(e) {
-            e.stopPropagation();
-            ensureAudioContext();
-            playClickSound();
-            playDialogueSound();
-            currentDialogue++;
-            if (currentDialogue < dialogues.length) {
-                showDialogue();
-                createGlitter();
-            } else {
-                playSuccessSound();
-                showSurpriseBox('💕 太甜了！', '你们的故事，才刚刚开始...<br>愿每一天都如此美好 💕');
-                switchScene(7);
-                for (let i = 0; i < 40; i++) {
-                    setTimeout(() => createHeart(), i * 150);
-                }
-                for (let i = 0; i < 60; i++) {
-                    setTimeout(() => createSparkle(), i * 80);
-                }
-                for (let i = 0; i < 15; i++) {
-                    setTimeout(() => {
-                        createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
-                        playFireworkSound();
-                    }, i * 250);
-                }
-                createConfetti();
-                for (let i = 0; i < 20; i++) {
-                    setTimeout(() => createFloatingHeart(), i * 200);
-                }
-            }
-        });
-
-        addTouchClickSupport(document.getElementById('btnReplay'), function(e) {
-            e.stopPropagation();
-            ensureAudioContext();
-            playClickSound();
-            resetAll();
-            document.querySelectorAll('.scene').forEach(scene => {
-                scene.classList.remove('active');
+            
+            document.getElementById('musicToggle').addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleBGM();
             });
-            document.getElementById('scene0').classList.add('active');
-            currentScene = 0;
-            updateProgress();
-        });
 
-        createStars();
-        createNightSakura();
-        initHiddenHearts();
-        
-        document.getElementById('musicControl').classList.add('visible');
-        
-        addTouchClickSupport(document.getElementById('envelope'), function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            openEnvelope();
-        });
-        
-        addTouchClickSupport(document.getElementById('wishBottle'), function(e) {
-            e.stopPropagation();
-            showWishModal();
-        });
-        
-        startDanmaku();
-        
-        function tryAutoPlay() {
-            try {
-                initAudio();
-                if (audioContext) {
-                    audioContext.resume().then(() => {
-                        playBGM();
-                        startAmbientEffects();
-                    }).catch(err => {
-                        console.log('Auto-play blocked, waiting for interaction:', err);
-                    });
-                    return true;
-                }
-            } catch (e) {
-                console.log('Auto-play failed:', e);
-            }
-            return false;
-        }
-        
-        function startAudioAfterInteraction() {
-            ensureAudioContext();
-            playBGM();
-            startAmbientEffects();
+            document.getElementById('volumeSlider').addEventListener('input', function(e) {
+                setVolume(e.target.value);
+            });
             
-            document.removeEventListener('touchstart', startAudioAfterInteraction);
-            document.removeEventListener('click', startAudioAfterInteraction);
-        }
-        
-        tryAutoPlay();
-        
-        setTimeout(() => {
-            if (!isPlaying) {
-                document.addEventListener('touchstart', startAudioAfterInteraction, { once: true });
-                document.addEventListener('click', startAudioAfterInteraction, { once: true });
+            addTouchClickSupport(document.getElementById('envelope'), function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                openEnvelope();
+            });
+            
+            addTouchClickSupport(document.getElementById('wishBottle'), function(e) {
+                e.stopPropagation();
+                showWishModal();
+            });
+            
+            addTouchClickSupport(document.getElementById('scene1'), function(e) {
+                ensureAudioContext();
+                playClickSound();
+                playHeartSound();
+                playTransitionSound();
+                createHeartClick(e.clientX, e.clientY);
+                createPulseRing(e.clientX, e.clientY);
+                createSparkleTrail(e.clientX, e.clientY);
+                createTouchRipple(e.clientX, e.clientY);
+                createParticles(e.clientX, e.clientY, 8);
+                createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
+                playLoveNoteSound();
+                createHeartbeatEffect();
+                addHeartValue(14);
+                setTimeout(() => switchScene(2), 300);
+            });
+
+            addTouchClickSupport(document.getElementById('scene2'), function(e) {
+                ensureAudioContext();
+                playClickSound();
+                playHeartSound();
+                playTransitionSound();
+                createHeartClick(e.clientX, e.clientY);
+                createPulseRing(e.clientX, e.clientY);
+                createFloatingBubble();
+                createSparkleTrail(e.clientX, e.clientY);
+                createTouchRipple(e.clientX, e.clientY);
+                createParticles(e.clientX, e.clientY, 8);
+                createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
+                playLoveNoteSound();
+                createHeartbeatEffect();
+                addHeartValue(14);
+                setTimeout(() => switchScene(3), 300);
+            });
+
+            addTouchClickSupport(document.getElementById('scene3'), function(e) {
+                ensureAudioContext();
+                playClickSound();
+                playHeartSound();
+                playTransitionSound();
+                createHeartClick(e.clientX, e.clientY);
+                createPulseRing(e.clientX, e.clientY);
+                createSparkleTrail(e.clientX, e.clientY);
+                createTouchRipple(e.clientX, e.clientY);
+                createParticles(e.clientX, e.clientY, 8);
+                createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
+                playLoveNoteSound();
+                createHeartbeatEffect();
+                addHeartValue(14);
+                setTimeout(() => switchScene(4), 300);
+            });
+
+            addTouchClickSupport(document.getElementById('scene4'), function(e) {
+                ensureAudioContext();
+                playClickSound();
+                playHeartSound();
+                playTransitionSound();
+                createHeartClick(e.clientX, e.clientY);
+                createPulseRing(e.clientX, e.clientY);
+                createSparkleTrail(e.clientX, e.clientY);
+                createTouchRipple(e.clientX, e.clientY);
+                createParticles(e.clientX, e.clientY, 8);
+                createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
+                playLoveNoteSound();
+                createHeartbeatEffect();
+                addHeartValue(14);
+                setTimeout(() => switchScene(5), 300);
+            });
+
+            addTouchClickSupport(document.getElementById('scene5'), function(e) {
+                ensureAudioContext();
+                playClickSound();
+                playHeartSound();
+                playTransitionSound();
+                createHeartClick(e.clientX, e.clientY);
+                createPulseRing(e.clientX, e.clientY);
+                createSparkleTrail(e.clientX, e.clientY);
+                createTouchRipple(e.clientX, e.clientY);
+                createParticles(e.clientX, e.clientY, 8);
+                createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
+                playLoveNoteSound();
+                createHeartbeatEffect();
+                addHeartValue(14);
+                setTimeout(() => switchScene('future'), 300);
+            });
+
+            addTouchClickSupport(document.getElementById('sceneFuture'), function(e) {
+                ensureAudioContext();
+                playClickSound();
+                playConfessionSound();
+                createHeartClick(e.clientX, e.clientY);
+                createPulseRing(e.clientX, e.clientY);
+                createHeartExplosion(e.clientX, e.clientY);
+                createSparkleTrail(e.clientX, e.clientY);
+                createTouchRipple(e.clientX, e.clientY);
+                createParticles(e.clientX, e.clientY, 12);
+                createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
+                playLoveNoteSound();
+                createHeartbeatEffect();
+                addHeartValue(16);
+                setTimeout(() => switchScene(6), 300);
+            });
+
+            const btnYes = document.getElementById('btnYes');
+            const btnNo = document.getElementById('btnNo');
+
+            addTouchClickSupport(btnNo, function(e) {
+                e.stopPropagation();
+                ensureAudioContext();
+                playClickSound();
+                noClickCount++;
+                
+                createRejectFloatingText();
+                
+                yesScale += 0.12;
+                btnYes.style.transform = `scale(${yesScale})`;
+                btnYes.style.boxShadow = `0 ${4 * yesScale}px ${20 * yesScale}px rgba(255, 105, 180, ${0.5 + noClickCount * 0.05})`;
+                
+                const gradientPercent = Math.min(100, 50 + noClickCount * 8);
+                btnYes.style.background = `linear-gradient(135deg, #ff69b4 0%, #ff1493 ${gradientPercent}%, #c71585 100%)`;
+                
+                noScale = Math.max(0.35, noScale - 0.08);
+                noOpacity = Math.max(0.25, noOpacity - 0.12);
+                btnNo.style.transform = `scale(${noScale})`;
+                btnNo.style.opacity = noOpacity;
+                
+                const textIndex = Math.min(noClickCount, noButtonTexts.length - 1);
+                btnNo.textContent = noButtonTexts[textIndex];
+                btnNo.style.fontSize = (1.15 * noScale) + 'rem';
+            });
+
+            addTouchClickSupport(btnYes, function(e) {
+                e.stopPropagation();
+                ensureAudioContext();
+                playSuccessSound();
+                switchScene('promise');
+                
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => createHeart(), i * 100);
+                }
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => createSparkle(), i * 50);
+                }
+            });
+
+            addTouchClickSupport(document.getElementById('scenePromise'), function(e) {
+                ensureAudioContext();
+                playClickSound();
+                playHeartSound();
+                playTransitionSound();
+                createHeartClick(e.clientX, e.clientY);
+                createPulseRing(e.clientX, e.clientY);
+                createSparkleTrail(e.clientX, e.clientY);
+                createParticles(e.clientX, e.clientY, 8);
+                createLoveNote(e.clientX, e.clientY, getRandomLoveNote());
+                playLoveNoteSound();
+                createHeartbeatEffect();
+                setTimeout(() => switchScene(8), 300);
+            });
+
+            addTouchClickSupport(document.getElementById('scene8'), function(e) {
+                e.stopPropagation();
+                ensureAudioContext();
+                playClickSound();
+                playDialogueSound();
+                currentDialogue++;
+                if (currentDialogue < dialogues.length) {
+                    showDialogue();
+                    createGlitter();
+                } else {
+                    playSuccessSound();
+                    showSurpriseBox('💕 太甜了！', '你们的故事，才刚刚开始...<br>愿每一天都如此美好 💕');
+                    switchScene(7);
+                    for (let i = 0; i < 40; i++) {
+                        setTimeout(() => createHeart(), i * 150);
+                    }
+                    for (let i = 0; i < 60; i++) {
+                        setTimeout(() => createSparkle(), i * 80);
+                    }
+                    for (let i = 0; i < 15; i++) {
+                        setTimeout(() => {
+                            createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
+                            playFireworkSound();
+                        }, i * 250);
+                    }
+                    createConfetti();
+                    for (let i = 0; i < 20; i++) {
+                        setTimeout(() => createFloatingHeart(), i * 200);
+                    }
+                }
+            });
+
+            addTouchClickSupport(document.getElementById('btnReplay'), function(e) {
+                e.stopPropagation();
+                ensureAudioContext();
+                playClickSound();
+                resetAll();
+                document.querySelectorAll('.scene').forEach(scene => {
+                    scene.classList.remove('active');
+                });
+                document.getElementById('scene0').classList.add('active');
+                currentScene = 0;
+                updateProgress();
+            });
+            
+            startDanmaku();
+            
+            function tryAutoPlay() {
+                try {
+                    initAudio();
+                    if (audioContext) {
+                        audioContext.resume().then(() => {
+                            playBGM();
+                            startAmbientEffects();
+                        }).catch(err => {
+                            console.log('Auto-play blocked, waiting for interaction:', err);
+                        });
+                        return true;
+                    }
+                } catch (e) {
+                    console.log('Auto-play failed:', e);
+                }
+                return false;
             }
-        }, 1000);
+            
+            function startAudioAfterInteraction() {
+                ensureAudioContext();
+                playBGM();
+                startAmbientEffects();
+                
+                document.removeEventListener('touchstart', startAudioAfterInteraction);
+                document.removeEventListener('click', startAudioAfterInteraction);
+            }
+            
+            tryAutoPlay();
+            
+            setTimeout(() => {
+                if (!isPlaying) {
+                    document.addEventListener('touchstart', startAudioAfterInteraction, { once: true });
+                    document.addEventListener('click', startAudioAfterInteraction, { once: true });
+                }
+            }, 1000);
+        });
     </script>
 </body>
 </html>
